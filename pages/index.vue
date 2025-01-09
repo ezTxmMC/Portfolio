@@ -1,13 +1,13 @@
+<script lang="ts" setup>
+definePageMeta({
+  prerender: true,
+  prerenderEager: true,
+});
+</script>
+
 <template>
-  <div>
-    <h1>Index page</h1>
-  </div>
+  <HeaderView />
+  <main></main>
 </template>
 
-<style scoped>
-div {
-  width: 100svw;
-  min-height: 100svh;
-  background-color: #313131;
-}
-</style>
+<style scoped></style>
