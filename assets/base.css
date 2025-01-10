@@ -15,3 +15,11 @@ body {
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   font-size: 13pt;
 }
+
+main {
+  margin: 2rem 30rem;
+  padding: 2rem;
+  width: auto;
+  background-color: #454545;
+  border-radius: 8px;
+}

@@ -1,13 +1,10 @@
-<template>
-  <div>
-    <h1>Projects page</h1>
-  </div>
-</template>
+<script lang="ts" setup>
+definePageMeta({
+  prerender: true,
+  prerenderEager: true,
+});
+</script>
 
-<style scoped>
-div {
-  width: 100svw;
-  min-height: 100svh;
-  background-color: #313131;
-}
-</style>
+<template>
+  <main></main>
+</template>

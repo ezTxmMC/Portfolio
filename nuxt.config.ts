@@ -4,6 +4,7 @@ declare module "@nuxt/schema" {
   interface NuxtConfig {
     i18n?: {
       locales: object[];
+      lazy: boolean;
       langDir: string;
       defaultLocale: string;
     };
@@ -11,6 +12,13 @@ declare module "@nuxt/schema" {
 }
 
 export default defineNuxtConfig({
+  modules: [
+    "@nuxtjs/i18n",
+    "@nuxt/icon",
+    "@nuxt/image",
+    "@nuxt/content",
+    "@nuxt/fonts",
+  ],
   compatibilityDate: "2025-01-08",
   devtools: { enabled: true },
   css: ["~/assets/base.css"],
@@ -20,13 +28,19 @@ export default defineNuxtConfig({
       title: "ezTxmMC Portfolio",
     },
   },
-  modules: ["@nuxtjs/i18n"],
+  fonts: {
+    defaults: {
+      weights: [400, 600],
+      styles: ["normal"],
+    },
+  },
   i18n: {
     locales: [
       { code: "en", iso: "en-US", file: "en.json" },
       { code: "de", iso: "de-DE", file: "de.json" },
     ],
-    langDir: "./locales",
+    lazy: true,
+    langDir: "locales",
     defaultLocale: "en",
   },
 });
