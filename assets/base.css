@@ -16,10 +16,24 @@ body {
   font-size: 13pt;
 }
 
-main {
+section {
   margin: 2rem 30rem;
   padding: 2rem;
   width: auto;
-  background-color: #454545;
   border-radius: 8px;
+}
+
+section[sectionType="text"] {
+  background-color: #454545;
+}
+
+section[sectionType="grid"] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(12rem, 15rem));
+  gap: 2rem;
+}
+
+section[sectionType="grid"] .item {
+  display: flex;
+  flex-direction: column;
 }

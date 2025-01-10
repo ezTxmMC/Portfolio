@@ -6,5 +6,5 @@ definePageMeta({
 </script>
 
 <template>
-  <main></main>
+  <section sectionType="grid"></section>
 </template>
