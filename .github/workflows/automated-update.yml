@@ -1,0 +1,77 @@
+name: Automated Package Update
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 2:00 UTC = 4:00 Germany
+  workflow_dispatch:
+  push:
+    branches:
+      - update
+
+jobs:
+  update-deps:
+    if: github.ref == 'refs/heads/update'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout update branch
+        uses: actions/checkout@v4
+        with:
+          ref: update
+          fetch-depth: 0 # Needed for merging
+
+      - name: Set up git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge master into update
+        run: |
+          git fetch origin master:master
+          git merge --no-ff master || true
+
+      - name: Set up Node.js 24 and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm' # optional, enables pnpm caching
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Update all dependencies
+        run: pnpm update --latest
+
+      - name: Check for changes
+        id: check
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git add .
+          git commit -m "chore: automated update"
+          git push origin update
+
+      - name: Get date
+        id: date
+        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: update
+          base: master
+          title: 'Automated Update ${{ steps.date.outputs.today }}'
+          body: 'Automated dependency update via GitHub Actions.'
+          delete-branch: false
