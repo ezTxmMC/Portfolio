@@ -5,15 +5,11 @@ permissions:
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 2:00 UTC = 4:00 Germany
+    - cron: '0 2 * * *'
   workflow_dispatch:
-  push:
-    branches:
-      - update
 
 jobs:
   update-deps:
-    if: github.ref == 'refs/heads/recode'
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: update
-          fetch-depth: 0 # Needed for merging
+          fetch-depth: 0
 
       - name: Set up git user
         run: |
@@ -31,7 +27,7 @@ jobs:
       - name: Merge recode into update
         run: |
           git fetch origin recode:recode
-          git merge --no-ff recode || true
+          git merge --no-ff recode
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -57,12 +53,12 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         run: |
           git add .
-          git commit -m "chore: automated update"
+          git commit -m "bump packages"
           git push origin update
 
       - name: Get date
         id: date
-        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        run: echo "today=$(date +'%Y-%m.%d')" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         if: steps.check.outputs.changed == 'true'
@@ -71,6 +67,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: update
           base: recode
-          title: 'Automated Update ${{ steps.date.outputs.today }}'
+          title: 'Automated update ${{ steps.date.outputs.today }}'
           body: 'Automated dependency update via GitHub Actions.'
           delete-branch: false
