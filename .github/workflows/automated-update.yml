@@ -1,5 +1,8 @@
 name: Automated Package Update
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: '0 2 * * *' # 2:00 UTC = 4:00 Germany
